@@ -87,7 +87,7 @@ class OrderControllerTest extends TestCase
             ->assertJsonPath('data.payment_method', CreditService::PAYMENT_METHOD)
             ->assertJsonPath('data.status', Order::TO_BE_SHIPPED)
             ->assertJsonPath('data.total', $total);
-        dd($response->json());
+        //dd($response->json());
         $this->assertDatabaseCount('order_product', 2);
         $this->assertDatabaseHas(
             'order_product',
