@@ -16,7 +16,6 @@ jobs:
           MYSQL_HOST: 127.0.0.1
           MYSQL_DB: laravel_eshop
           MYSQL_USER: root
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_PASSWORD: password
         ports:
           - "3306:3306"
@@ -43,9 +42,4 @@ jobs:
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Execute tests (Unit and Feature tests) via PHPUnit
-      env:
-        MYSQL_DATABASE: laravel_eshop
-        DB_USERNAME: user
-        DB_PASSWORD: secret
-        DB_PORT: ${{ job.services.mysql.ports[3306] }}
       run: vendor/bin/phpunit
