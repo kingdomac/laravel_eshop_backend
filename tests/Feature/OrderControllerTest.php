@@ -75,8 +75,9 @@ class OrderControllerTest extends TestCase
         Queue::assertPushed(AdminOrderPurchased::class);
 
         // $response->dd();
+        $this->assertCount(2, $response['data']['products']);
         $response->assertCreated()
-            ->assertJsonCount(2, (string)'data.products')
+            //->assertJsonCount(2, 'data.products')
             ->assertJsonPath('data.products.0.id', $productOne->id)
             ->assertJsonPath('data.products.1.id', $productTwo->id)
             ->assertJsonPath('data.products.0.quantity', 2)
