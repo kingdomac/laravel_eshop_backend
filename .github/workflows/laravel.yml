@@ -32,7 +32,7 @@ jobs:
       run: |
         mysql --version
         sudo apt-get install -y mysql-client
-        mysql --host 127.0.0.1 --port ${{ jobs.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
+        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
