@@ -49,12 +49,12 @@ class ProductControllerTest extends TestCase
 
         $response->assertOk()
             ->assertJsonCount(2, 'data.*')
-            ->assertJsonPath('data.0.category_id',  "$cat_1->id")
-            ->assertJsonPath('data.1.category_id',  "$cat_1->id");
+            ->assertJsonPath('data.0.category_id',  $cat_1->id)
+            ->assertJsonPath('data.1.category_id',  $cat_1->id);
 
         $response_2->assertOk()
             ->assertJsonCount(1, 'data.*')
-            ->assertJsonPath('data.0.category_id', "$cat_1->id");
+            ->assertJsonPath('data.0.category_id', $cat_1->id);
     }
 
     /**

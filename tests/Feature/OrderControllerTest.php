@@ -74,7 +74,7 @@ class OrderControllerTest extends TestCase
         //Notification::assertSentTo($admin, AdminOrderPurchased::class);
         Queue::assertPushed(AdminOrderPurchased::class);
 
-        $response->dd();
+        //$response->dd();
 
         $response->assertCreated()
             ->assertJsonCount(2, 'data.products')
