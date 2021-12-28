@@ -80,14 +80,14 @@ class OrderControllerTest extends TestCase
             ->assertJsonCount(2, 'data.products')
             ->assertJsonPath('data.products.0.id', $productOne->id)
             ->assertJsonPath('data.products.1.id', $productTwo->id)
-            ->assertJsonPath('data.products.0.quantity', 2)
-            ->assertJsonPath('data.products.1.quantity', 1)
+            ->assertJsonPath('data.products.0.quantity', '2')
+            ->assertJsonPath('data.products.1.quantity', '1')
             ->assertJsonPath('data.products.0.in_stock', (int)($productOne->in_stock - 2))
             ->assertJsonPath('data.products.1.in_stock', (int)($productTwo->in_stock - 1))
             ->assertJsonPath('data.payment_method', CreditService::PAYMENT_METHOD)
             ->assertJsonPath('data.status', Order::TO_BE_SHIPPED)
             ->assertJsonPath('data.total', $total);
-
+        dd($response->json());
         $this->assertDatabaseCount('order_product', 2);
         $this->assertDatabaseHas(
             'order_product',
