@@ -45,5 +45,5 @@ Route::prefix('v1')->group(function () {
 
     // Order
     Route::get('/orders/{order:number}', [OrderController::class, 'show'])->name("orders.show");
-    Route::post('/orders/checkout', [OrderController::class, 'purchase'])->name("orders.checkouts");
+    Route::post('/orders/checkout', [OrderController::class, 'purchase'])->name("orders.checkout");
 });
