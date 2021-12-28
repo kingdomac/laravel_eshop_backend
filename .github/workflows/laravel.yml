@@ -11,29 +11,29 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mysql:latest
+        image: mysql:5.7
         env:
-          MYSQL_DATABASE: laravel_eshop
-          MYSQL_USER: user
-          MYSQL_PASSWORD: secret
-          MYSQL_ROOT_PASSWORD: secretroot
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_DB: laravel_eshop
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_PASSWORD: password
         ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - "3306:3306"
     steps:
     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
       with:
         php-version: '8.0'
     - uses: actions/checkout@v2
-    - name: Set up MySQL
+    - name: Setup MySQL
       run: |
         sudo /etc/init.d/mysql start
-        mysql -e 'CREATE DATABASE ${{ env.MYSQL_DATABASE }};' -u${{ env.MYSQL_USER }} -p${{ env.MYSQL_PASSWORD }}
+        mysql -e CREATE DATABASE ${{ env.MYSQL_DB }} -u${{ env.MYSQL_USER }} -p${{ env.MYSQL_PASSWORD }}
     - name: Verify MySQL connection
       run: |
         mysql --version
         sudo apt-get install -y mysql-client
-        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uuser -psecret -e "SHOW DATABASES"
+        mysql --host 127.0.0.1 --port ${{ jobs.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
