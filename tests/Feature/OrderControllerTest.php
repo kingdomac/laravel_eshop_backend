@@ -74,14 +74,14 @@ class OrderControllerTest extends TestCase
         //Notification::assertSentTo($admin, AdminOrderPurchased::class);
         Queue::assertPushed(AdminOrderPurchased::class);
 
-        //$response->dd();
+        dd($response->getContent());
 
         $response->assertCreated()
             ->assertJsonCount(2, 'data.products')
             ->assertJsonPath('data.products.0.id', $productOne->id)
             ->assertJsonPath('data.products.1.id', $productTwo->id)
-            ->assertJsonPath('data.products.0.quantity', 2)
-            ->assertJsonPath('data.products.1.quantity', 1)
+            ->assertJsonPath('data.products.0.quantity', '2')
+            ->assertJsonPath('data.products.1.quantity', '1')
             ->assertJsonPath('data.products.0.in_stock', (int)($productOne->in_stock - 2))
             ->assertJsonPath('data.products.1.in_stock', (int)($productTwo->in_stock - 1))
             ->assertJsonPath('data.payment_method', CreditService::PAYMENT_METHOD)

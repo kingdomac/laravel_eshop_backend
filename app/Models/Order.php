@@ -22,8 +22,7 @@ class Order extends Model
 
     protected $casts = [
         'status' => 'integer',
-        'total' => 'decimal:2',
-        'quantity' => 'integer'
+        'total' => 'decimal:2'
     ];
 
     public function user()
