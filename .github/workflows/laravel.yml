@@ -27,7 +27,7 @@ jobs:
     - name: Setup MySQL
       run: |
         sudo /etc/init.d/mysql start
-        mysql -e CREATE DATABASE ${{ env.MYSQL_DB }} -u${{ env.MYSQL_USER }} -p${{ env.MYSQL_PASSWORD }}
+        mysql -e CREATE DATABASE ${{ job.services.env.MYSQL_DB }} -u${{ job.services.env.MYSQL_USER }} -p${{ job.services.env.MYSQL_PASSWORD }}
     - name: Verify MySQL connection
       run: |
         mysql --version
