@@ -6,7 +6,6 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPaswordController;
-use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\UserController;
 
@@ -29,21 +28,29 @@ Route::prefix('v1')->group(function () {
         Route::get('/user', [UserController::class, 'getAuthUser'])->name('user.auth.show');
         Route::put('/user', [UserController::class, 'updateAuthUser'])->name('user.auth.update');
         Route::put('/change-password', [UserController::class, 'changePassword'])->name('user.auth.change.password');
-        Route::post('/auth/orders/checkout', [OrderController::class, 'purchase'])->name("orders.auth.checkout");
-        Route::get('/orders', [OrderController::class, 'index'])->name("orders.list");
     });
 
     // Categories
-    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.list');
-    Route::get('/categories-home', [CategoryController::class, 'homeCategories'])->name('categories.home');
-    Route::get('/categories/{category:slug}/products', [CategoryController::class, 'loadCategory'])->name('category.products');
+    Route::controller(CategoryController::class)->group(function () {
+        Route::get('/categories', 'index')->name('categories.list');
+        Route::get('/categories-home', 'homeCategories')->name('categories.home');
+        Route::get('/categories/{category:slug}/products', 'loadCategory')->name('category.products');
+    });
 
     // Products
-    Route::get('/products', [ProductController::class, 'index'])->name('products.list');
-    Route::get('/products/{product}/related-products', [ProductController::class, 'getRelatedProducts'])->name('products.related');
-    Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('product.show');
+    Route::controller(ProductController::class)->group(function () {
+        Route::get('/products', 'index')->name('products.list');
+        Route::get('/products/{product}/related-products',  'getRelatedProducts')->name('products.related');
+        Route::get('/products/{product:slug}', 'show')->name('product.show');
+    });
 
     // Order
-    Route::get('/orders/{order:number}', [OrderController::class, 'show'])->name("orders.show");
-    Route::post('/orders/checkout', [OrderController::class, 'purchase'])->name("orders.checkout");
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('/orders/{order:number}', 'show')->name("orders.show");
+        Route::post('/orders/checkout', 'purchase')->name("orders.checkout");
+        Route::middleware(['auth:sanctum'])->group(function () {
+            Route::get('/orders', 'index')->name("orders.list");
+            Route::post('/auth/orders/checkout',  'purchase')->name("orders.auth.checkout");
+        });
+    });
 });
