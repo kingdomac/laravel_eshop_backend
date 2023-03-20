@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Repositries\CategoryRepo;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Facades\Schema;
@@ -10,19 +11,18 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryController extends Controller
 {
+    public function __construct(protected CategoryRepo $categoryRepo)
+    {
+    }
     public function index(): JsonResource
     {
-        $categories = Category::query()->get();
+        $categories = $this->categoryRepo->all();
         return CategoryResource::collection($categories);
     }
 
     public function homeCategories(): JsonResource
     {
-        $categories = Category::query()->isHome()->withCount('products')->with(['products' => function ($query) {
-            $query->latest()->limit(5)->groupBy(
-                Schema::getColumnListing((new Product())->getTable())
-            );
-        }])->orderBy('id', 'desc')->limit(2)->get();
+        $categories = $this->categoryRepo->getHomeCategories();
         return CategoryResource::collection($categories);
     }
 
@@ -30,21 +30,15 @@ class CategoryController extends Controller
     {
         $perPage = request('per_page') ? (int) request('per_page') : 10;
 
-        $category->loadCount('products')->load([
-            'products' => function ($query) use ($perPage) {
-                $query->orderBy('products.id', 'desc')
-                    ->groupBy(Schema::getColumnListing((new Product())->getTable()))
-                    ->paginate($perPage);
-            }
-        ]);
+        $categoryWithProducts = $this->categoryRepo->loadCategoryWithItsProducts($category, $perPage);
 
         $meta = [
             'per_page' => $perPage,
             'current_page' => request('page') ?? 1,
-            'total' => $category->products_count,
-            'last_page' => ceil($category->products_count / $perPage),
+            'total' => $categoryWithProducts->products_count,
+            'last_page' => ceil($categoryWithProducts->products_count / $perPage),
         ];
 
-        return CategoryResource::make($category)->additional(['meta' => $meta]);
+        return CategoryResource::make($categoryWithProducts)->additional(['meta' => $meta]);
     }
 }

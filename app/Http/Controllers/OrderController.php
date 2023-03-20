@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Repositries\OrderRepo;
 use App\Models\Order;
 use App\Http\Services\OrderService;
 use App\Http\Resources\OrderResource;
@@ -11,9 +12,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class OrderController extends Controller
 {
 
+    public function __construct(protected OrderRepo $orderRepo)
+    {
+    }
     public function index(): JsonResource
     {
-        $orders = Order::with('products')->where('user_id', auth()->id())->orderBy('created_at', 'desc')->get();
+        $orders = $this->orderRepo->getAllOrdersByAuthUser();
         return OrderResource::collection($orders);
     }
 
