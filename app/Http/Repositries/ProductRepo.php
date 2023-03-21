@@ -9,10 +9,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class ProductRepo
 {
 
-    public function getWithFiltrationAndPagination(int $perPage = 10, String $queryString): LengthAwarePaginator
+    public function getWithFiltrationAndPagination(?int $perPage = 10, ?String $queryString = ""): LengthAwarePaginator
     {
-        $perPage =  $perPage ??  10;
-
         return Product::query()
             ->when(
                 !empty($queryString),
@@ -31,6 +29,14 @@ class ProductRepo
             ->where('category_id', $relatedToProdcut->category_id)
             ->latest()
             ->take($limit)
+            ->get();
+    }
+
+    public function getAllProductsInsideOrder(array $itemsId)
+    {
+        return Product::query()
+            ->select('id', 'price', 'sale_price', 'in_stock')
+            ->whereIn('id', $itemsId)
             ->get();
     }
 }

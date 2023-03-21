@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Http\Repositries\ProductRepo;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
@@ -24,13 +25,17 @@ class OrderService
     private $total = 0;
     private $orderProducts = [];
 
+    public function __construct(protected ProductRepo $productRepo)
+    {
+    }
+
     public function handleOrder(array $order)
     {
         $items =  $order['items'];
-        $itemsId = collect($items)->pluck('id');
+        $itemsId = collect($items)->pluck('id')->toArray();
 
         // load products from order
-        $products = Product::query()->select('id', 'price', 'sale_price', 'in_stock')->whereIn('id', $itemsId)->get();
+        $products = $this->productRepo->getAllProductsInsideOrder($itemsId);
 
         // validate items in cart
         $areValidItems = $this->validateItemsInCart($products, $items);

@@ -18,8 +18,8 @@ class ProductController extends Controller
         $data = $request->validated();
 
         $products = $this->productRepo->getWithFiltrationAndPagination(
-            perPage: $data['per_page'],
-            queryString: $data['query']
+            $data['per_page'] ?? null,
+            $data['query'] ?? null
         );
 
         return ProductResource::collection($products);

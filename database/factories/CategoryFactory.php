@@ -15,7 +15,7 @@ class CategoryFactory extends Factory
     public function definition()
     {
         $name = $this->faker->words(2, true);
-        $slug = Str::slug($name) . Str::random(2);;
+        $slug = Str::slug($name) . "_" . Str::random(2);;
         return [
             'name' => $name,
             'slug' => $slug,
