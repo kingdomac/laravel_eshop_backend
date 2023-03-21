@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Exceptions\Order\OrderInvalidException;
 use App\Http\Repositries\ProductRepo;
 use App\Models\User;
 use App\Models\Order;
@@ -38,13 +39,14 @@ class OrderService
         $products = (new ProductRepo())->getAllProductsInsideOrder($itemsId);
 
         // validate items in cart
-        $areValidItems = $this->validateItemsInCart($products, $items);
+        $areValidQuantityItems = $this->validateItemsQuantityInCart($products, $items);
 
         throw_if(
-            !$areValidItems,
-            ValidationException::withMessages([
-                'quantity' => 'Some of purchased quantities are bigger than the one in the stock'
-            ])
+            $areValidQuantityItems,
+            OrderInvalidException::InvalidQuantity()
+            // ValidationException::withMessages([
+            //     'quantity' => 'Some of purchased quantities are bigger than the one in the stock'
+            // ])
         );
 
         $orderObj = new Order();
@@ -97,14 +99,14 @@ class OrderService
         return OrderResource::make($orderObj->load('products'));
     }
 
-    private function validateItemsInCart($products, $cartItems)
+    private function validateItemsQuantityInCart($products, $cartItems)
     {
         $isValid = true;
         foreach ($cartItems as $key => $item) {
             $product = $products->firstWhere('id', $item['id']);
 
             // Validate if the purchased quantity is smaller or equal to the stock quantity
-            if ($item['quantity'] > $product->in_stock) {
+            if ($item['quantity'] > $product->in_stock || $item['quantity'] <= 0) {
                 $isValid = false;
                 $this->reset();
                 break;

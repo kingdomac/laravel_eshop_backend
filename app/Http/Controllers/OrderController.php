@@ -26,8 +26,9 @@ class OrderController extends Controller
         return OrderResource::make($order->load('products'));
     }
 
-    public function purchase(StoreOrderRequest $request): JsonResource
+    public function purchase(StoreOrderRequest $request) //: JsonResource
     {
+
         $purchasedOrder = $request->validated();
         return (new OrderService())->handleOrder($purchasedOrder);
     }
