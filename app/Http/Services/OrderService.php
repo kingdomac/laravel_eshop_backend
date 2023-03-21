@@ -25,7 +25,7 @@ class OrderService
     private $total = 0;
     private $orderProducts = [];
 
-    public function __construct(protected ProductRepo $productRepo)
+    public function __construct()
     {
     }
 
@@ -35,7 +35,7 @@ class OrderService
         $itemsId = collect($items)->pluck('id')->toArray();
 
         // load products from order
-        $products = $this->productRepo->getAllProductsInsideOrder($itemsId);
+        $products = (new ProductRepo())->getAllProductsInsideOrder($itemsId);
 
         // validate items in cart
         $areValidItems = $this->validateItemsInCart($products, $items);
