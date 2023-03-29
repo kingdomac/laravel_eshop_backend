@@ -42,7 +42,7 @@ class OrderService
         $areValidQuantityItems = $this->validateItemsQuantityInCart($products, $items);
 
         throw_if(
-            $areValidQuantityItems,
+            !$areValidQuantityItems,
             OrderInvalidException::InvalidQuantity()
             // ValidationException::withMessages([
             //     'quantity' => 'Some of purchased quantities are bigger than the one in the stock'
