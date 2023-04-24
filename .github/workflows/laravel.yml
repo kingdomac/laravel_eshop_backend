@@ -14,6 +14,7 @@ jobs:
       DB_USER: root
       DB_PASSWORD: root
     steps:
+      - uses: actions/checkout@v2
       - name: Setup PHP
         uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
         with:

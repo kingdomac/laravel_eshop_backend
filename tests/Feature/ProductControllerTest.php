@@ -80,7 +80,7 @@ class ProductControllerTest extends TestCase
         $response2 = $this->get(route('products.list', ['query' => $query, 'per_page' => 1]));
         //$response->dd();
         $response->assertOk()
-            ->assertJsonCount(1, 'data')
+            ->assertJsonCount(2, 'data')
             ->assertJsonPath('data.0.id', $product->id)
             ->assertJsonPath('data.1.id', $product2->id);
 
