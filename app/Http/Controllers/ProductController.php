@@ -7,7 +7,7 @@ use App\Http\Requests\Product\ListRequest;
 use App\Models\Product;
 use App\Http\Resources\ProductResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-// test pushhhh
+
 class ProductController extends Controller
 {
     public function __construct(protected ProductRepo $productRepo)
