@@ -9,7 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class ProductRepo
 {
 
-    public function getWithFiltrationAndPagination(?int $perPage = 10, ?String $queryString = ""): LengthAwarePaginator
+    public function getWithFiltrationAndPagination(int $perPage = 10, String $queryString = ""): LengthAwarePaginator
     {
         return Product::query()
             ->when(

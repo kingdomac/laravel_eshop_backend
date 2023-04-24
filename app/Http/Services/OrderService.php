@@ -43,7 +43,7 @@ class OrderService
 
         throw_if(
             !$areValidQuantityItems,
-            OrderInvalidException::InvalidQuantity()
+            new OrderInvalidException(['quantity' => 'Some of purchased quantities are bigger than the one in the stock'])
             // ValidationException::withMessages([
             //     'quantity' => 'Some of purchased quantities are bigger than the one in the stock'
             // ])
@@ -120,6 +120,7 @@ class OrderService
             $subTotal = $this->claculateSubTotal($product, $item);
             $this->total += $subTotal;
         }
+
         return $isValid;
     }
 

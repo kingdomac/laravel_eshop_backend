@@ -16,10 +16,11 @@ class ProductController extends Controller
     public function index(ListRequest $request): JsonResource
     {
         $data = $request->validated();
-
+        $perPage = $data['per_page'] ?? 10;
+        $queryString = $data['query'] ?? '';
         $products = $this->productRepo->getWithFiltrationAndPagination(
-            $data['per_page'] ?? null,
-            $data['query'] ?? null
+            perPage: $perPage,
+            queryString: $queryString
         );
 
         return ProductResource::collection($products);

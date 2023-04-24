@@ -4,16 +4,17 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Arr;
 use App\Mail\OrderPurchased;
 use App\Http\Services\CreditService;
-use App\Models\Order;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Queue;
 use App\Notifications\AdminOrderPurchased;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Queue;
+use App\Http\Services\Payment\Enums\PaymentMethodEnum;
 
 class OrderControllerTest extends TestCase
 {
@@ -49,7 +50,7 @@ class OrderControllerTest extends TestCase
             'email' => $this->faker->email(),
             'address' => $this->faker->address(),
             'phone' => '34444',
-            'paymentMethod' => CreditService::PAYMENT_METHOD,
+            'paymentMethod' => PaymentMethodEnum::CREDIT->value,
             'cardNumber' => '1234567',
             'expiryDate' => '11/23',
             'securityNumber' => '123',
@@ -84,7 +85,7 @@ class OrderControllerTest extends TestCase
             ->assertJsonPath('data.products.1.quantity', 1)
             ->assertJsonPath('data.products.0.in_stock', (int)($productOne->in_stock - 2))
             ->assertJsonPath('data.products.1.in_stock', (int)($productTwo->in_stock - 1))
-            ->assertJsonPath('data.payment_method', CreditService::PAYMENT_METHOD)
+            ->assertJsonPath('data.payment_method', PaymentMethodEnum::CREDIT->value)
             ->assertJsonPath('data.status', Order::TO_BE_SHIPPED)
             ->assertJsonPath('data.total', $total);
 
@@ -114,7 +115,7 @@ class OrderControllerTest extends TestCase
             'email' => $this->faker->email(),
             'address' => $this->faker->address(),
             'phone' => '34444',
-            'paymentMethod' => CreditService::PAYMENT_METHOD,
+            'paymentMethod' => PaymentMethodEnum::CREDIT->value,
             'cardNumber' => '1234567',
             'expiryDate' => '11/23',
             'securityNumber' => '123',
@@ -128,6 +129,7 @@ class OrderControllerTest extends TestCase
             route('orders.checkout'),
             $order
         );
+
 
         $response
             ->assertUnprocessable()

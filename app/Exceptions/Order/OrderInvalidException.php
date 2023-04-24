@@ -9,17 +9,20 @@ use Illuminate\Support\Facades\Http;
 
 class OrderInvalidException extends CustomException
 {
-    //
-    public function render()
-    {
-        return new JsonResponse([
-            'error' =>  $this->getMessage()
+    protected $message = 'The given data was invalid.';
+    protected $statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
+    protected $errors;
 
-        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+    public function __construct($errors)
+    {
+        $this->errors = $errors;
     }
 
-    public static function InvalidQuantity(): self
+    public function render($request)
     {
-        return new self('Some of the purchased quantities are bigger than the one in the stock');
+        return response()->json([
+            'message' => $this->message,
+            'errors' => $this->errors,
+        ], $this->statusCode);
     }
 }
